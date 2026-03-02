@@ -1,56 +1,81 @@
 <template>
-  <h1>{{ message }}</h1>
-  <img v-bind:src="imageUrl" alt="" />
-  <br/>
-    <img :src="imageUrl" alt="" />
+  <div class="card">
+    <h2>Message: {{ message }}</h2>
+    <h2>Number: {{ number }}</h2>
+    <button @click="changeMessageToUpperCase">Change message to upper case</button>
+    <button @click="incrementNumber">Increment number</button>
+  </div>
+<div class = "card">
+  <h2>Name: {{ wizard.name }}</h2>
+    <h2>Wand: {{ wizard.wand }}</h2>
+    <button @click="changeNameToUpperCase">Change name to upper case</button>
+    <button @click="changeWandCore">Change wand core to upper case</button>
+    <button @click="changeWizard">Change wizard</button>
 
 
+</div>
+<div class = "card">
+  <h2>Array:{{ wizards }}</h2>
+  <button @click="wizards.push('Draco')">Add Wizard</button>
+</div>
 
-
-  <button @click="changeImg">Change image</button>
-<hr/>
-<input type = "text" :v-model="defaultInputText" />
-<hr>
-<p :class="className">Harry Potter</p>
-<p :class="{inactive: isInactive, center: isCennter}">Harry Potter</p>
-<p :class="['active','center']">Harry Potter</p>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-let message = 'Hello, v-bind!'
+let message = ref('Hello, Reactivity!')
+let number = ref(1)
 
-let imageUrl = ref  ('/public/img/banner_1.jpg')
-
-
-
-function changeImg() {
-  imageUrl.value = '/public/img/banner_2.jpg'
+function changeMessageToUpperCase() {
+  message.value = message.value.toUpperCase()
+  console.log(message)
 }
 
-let defaultInputText = 'Write Something here'
-let className = 'active'
-let isInactive = ref(false)
-let isCennter = ref(false)
+function incrementNumber() {
+  number.value += 1
+  console.log(number)
+}
 
+let wizard = ref({
+  id: 1001,
+  name: 'Harry Potter',
+  house: 'Gryffindor',
+  age: 17,
+  wand:{
+    core: 'Phoenix Feather',
+    wood: 'Holly',
+  }
+})
+
+
+function changeNameToUpperCase() {
+  wizard.value.name = wizard.value.name.toUpperCase()
+  console.log(wizard)
+}
+
+function changeWandCore() {
+  wizard.value.wand.core = 'Unicorn Hair'
+}
+
+function changeWizard() {
+  wizard.value = {
+    id: 1002,
+    name: 'Hermione Granger',
+    house: 'Gryffindor',
+    age: 17,
+    wand:{
+      core: 'Dragon Heartstring',
+      wood: 'Vine',
+    }
+  }
+}
+
+let wizards = ref((['Harry', 'Hermione', 'Ron',]))
 
 </script>
 
 <style scoped>
-img {
-  max-width: 300px;
-}
-
-.active {
-  color: green;
-}
-
-.inactive {
-  color: red;
-  text-decoration: line-through;
-}
-
-.center{
-  text-align: center;
+.card {
+  border: 1px solid purple;
 }
 </style>
