@@ -1,29 +1,59 @@
 <template>
   <h1>{{ message }}</h1>
-
-  <p>
-    What has keys but can't open locks, space but no room, and can't go outside? What am I?
-  </p>
-
-  <button style="width: 200px" @click="showAnswer = !showAnswer ">
-  {{ showAnswer ? "Hide Answer" : "Show Answer" }}</button>
-
-  <div v-if="showAnswer">A keyboard.</div>
-  <div v-show="showAnswer">A keyboard.</div>
+  <button @click="sortUsersByAge">sort users by age</button>
+  <ul>
+  <li v-for="(user,index) in users" :key="user.id">
+    {{ index }} - {{ user.id }} - {{ user.name }} - {{ user.age }} - 
+    {{ user.isActive }}
+  </li>
+</ul>
 
 
+  <table>
+    <tr>
+      <th>Index</th>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Operation</th>
+    </tr>
 
-  <div v-if="Math.random() > 0.5">Now you see me .</div>
-  <div v-else>Now you don't.</div>
+    <tr v-for="(user, index) in users" :key="user.id">
+      <td>{{ index }}</td>
+      <td>{{ user.id }}</td>
+      <td :class = "{inactive: !user.isActive}">{{ user.name }}</td>
+      <td>{{ user.age }}</td>
+      <td>
+        <button @click="user.isActive = !user.isActive">
+          {{ user.isActive ? 'Deactivate' : 'Restore' }}
+        </button>
+      </td>
+    </tr>
+    <hr/>
+    <div v-for="(value, key,index) in users[0]" > {{}}-{{key }}: {{ value }}</div>
+  </table>
+
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-let message = ref('Hello, v-if!')
+let message = ref('Hello, v-for!')
 
-let showAnswer = ref(false)
+const users = ref([
+  { id: 1001, name: 'John Smith', age: 26, isActive: false },
+  { id: 1002, name: 'Tom Doe', age: 16, isActive: false },
+  { id: 1003, name: 'Frankin Wong', age: 18, isActive: true }
+])
+
+function sortUsersByAge() {
+  users.value.sort((a, b) => a.age - b.age)
+}
 </script>
 
 <style scoped>
+.inactive{
+  color: red;
+  text-decoration: line-through;
+}
 </style>
