@@ -1,92 +1,108 @@
 <template>
-    <div>
-      <div>
-        Press down the "Enter" key will trigger a console log print:
-        <input type="text" @keydown.enter="logKey('Enter')">
-      </div>
-  
-      <div>
-        Press down the "Arrow Down" key will trigger a console log print:
-        <input type="text" @keydown.down="logKey('Arrow Down')">
-      </div>
-  
-      <div>
-        Press down the "Space" key will trigger a console log print:
-        <input type="text" @keydown.space="logKey('Space')">
-      </div>
-  
-      <div>
-        Press down the "b" key will trigger a console log print:
-        <input type="text" @keydown.b="logKey('b')">
-      </div>
-
-      <div>
-        Press down the "ctrl + c " key will trigger a console log print:
-        <input type="text" @keydown.ctrl.c="logKey('ctrl + c')">
-      </div>
-
-    </div>
   <h1>{{ message }}</h1>
-
-  <button v-on:click="replaceText('v-on is fun!')">Replace text</button>
-  <button @click="replaceText('v-on is fun!')">Replace text</button>
-  <hr/>
-  <p> An input field where the user can only input numbers:</p>
-  <input type="text" @keydown="handleInput($event)">
-
-
-
-  
-<hr/>
-<div style ="width: 100px; height: 100px; background-color: lightblue" @contextmenu.prevent="console.log('Show a custom context menu')">
-  </div>
-  <div id="mouseover" @mouseover="fun1">
-    <textarea @mouseover.stop="fun2($event)">This is text area</textarea>"
-  </div>"
-
-
-  
+  <h1>Welcome, {{ formData.name }}</h1>
+  <form action="">
+    <div>
+      <span>Name:</span>
+      <span>
+        <!-- formData.name is synced after "change" event instead of "input" event. -->
+        <input type="text" v-model.lazy="formData.name" />
+      </span>
+    </div>
+    <div>
+      <span>Gender:</span>
+      <span>
+        <input type="radio" id="male" value="M" v-model="formData.gender" />
+        <label for="male">M</label>
+        <input type="radio" id="female" value="F" v-model="formData.gender" />
+        <label for="female">F</label>
+      </span>
+    </div>
+    <div>
+      <span>Age:</span>
+      <span>
+        <!-- Input is automatically typecast as a number. -->
+        <input type="text" id="age" v-model.number="formData.age" />
+      </span>
+    </div>
+    <div>
+      <span>Hobbies:</span>
+      <!-- We can bind multiple checkboxes to the same array. -->
+      <input type="checkbox" value="basketball" v-model="formData.hobbies" />
+      <label for="basketball">Basketball</label>
+      <input type="checkbox" value="football" v-model="formData.hobbies" />
+      <label for="football">Football</label>
+      <input type="checkbox" value="js" v-model="formData.hobbies" />
+      <label for="js">JavaScript</label>
+    </div>
+    <div>
+      <span>Profession:</span>
+      <select v-model="formData.profession">
+        <option value="">Please select one</option>
+        <option value="1">Software Engineer</option>
+        <option value="3">Product Manager</option>
+        <option value="4">Professor</option>
+      </select>
+    </div>
+    <div>
+      <span>Description:</span>
+      <!-- Leading and trailing whitespace is removed automatically. -->
+      <textarea
+        v-model.trim="formData.desc"
+        @keyup.enter="submitForm"
+      ></textarea>
+    </div>
+    <div>
+      <input type="reset" value="Reset" @click="resetForm" />
+      <!-- Prevent the form from submitting through form action. -->
+      <input type="submit" value="Submit" @click.prevent="submitForm" />
+    </div>
+  </form>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 
-let message = ref('Hello, v-on!')
+let message = ref('Hello, v-model!')
 
-function replaceText(msg) {
-  message.value = msg
-}
-function handleInput(event) {
-  console.log(event)
-let keyCode = event.keyCode
-if (keyCode < 48 || keyCode > 57) {
-  event.preventDefault()
+let formData = ref({
+  name: '',
+  gender: '',
+  age: '',
+  hobbies: [],
+  profession: '',
+  desc: ''
+})
+
+function resetForm() {
+  formData.value = {
+    name: '',
+    gender: '',
+    age: '',
+    hobbies: [],
+    profession: '',
+    desc: ''
   }
 }
 
-function fun1() {
-  console.log('Mouse is over the div')
+function submitForm() {
+  console.log(JSON.stringify(formData.value))
+  // We can use axios or fetch() to submit data to the back end.
 }
-
-function fun2(event) {
-  //event.stopPropagation()
-  console.log('Mouse is over the textarea')
-}
-
-
-
 </script>
 
-
 <style scoped>
-#mouseover {
-  margin: 100px;
-  text-align: right;
-  background-color: purple;
-  width: 300px;
-  height: 300px;
+form {
+  padding: 20px;
 }
 
+form div {
+  height: 40px;
+  line-height: 40px;
+}
 
-
+form div span {
+  display: inline-block;
+  width: 100px;
+}
 </style>
