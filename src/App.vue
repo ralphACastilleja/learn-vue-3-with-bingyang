@@ -1,62 +1,45 @@
 <template>
-  <StudentList :list="list">
-    <template #default="{ stu }">
-      <span :class="{ cursed: stu.name == 'Harry' }">
-        {{ stu.name }}
-      </span>
-    </template>
-  </StudentList>
-
-  <hr />
-
-  <el-table :data="todoList" stripe border style="width: 100%">
-    <el-table-column prop="userId" label="User ID" width="180" />
-    <el-table-column prop="id" label="ID" width="180" />
-    <el-table-column prop="title" label="Title" />
-    <el-table-column prop="completed" label="Status">
-      <template #default="slotProps">
-        <el-tag type="success" v-if="slotProps.row.completed">Completed</el-tag>
-        <el-tag type="danger" v-else>Incomplete</el-tag>
-      </template>
-    </el-table-column>
-  </el-table>
+  <h1>{{ message }}</h1>
+  <button @click="sortUsersByAge">Sort users by age</button>
+  <button @click="hideInactiveUsers">Hide inactive users</button>
+  <button @click="showFirstTwoUsers">Show first two users</button>
+  <ul>
+    <li v-for="(user, index) in users" :key="user.id">
+      {{ index }} - {{ user.id }} - {{ user.name }} - {{ user.age }} -
+      {{ user.isActive }}
+    </li>
+  </ul>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import StudentList from './StudentList.vue'
+import { ref } from 'vue'
 
-const list = ref([
-  {
-    id: 1,
-    name: 'Harry'
-  },
-  {
-    id: 2,
-    name: 'Hermione'
-  },
-  {
-    id: 3,
-    name: 'Ron'
-  }
+let message = ref('Hello, Array Change Detection!')
+
+const users = ref([
+  { id: 1001, name: 'John Smith', age: 26, isActive: false },
+  { id: 1002, name: 'Tom Doe', age: 16, isActive: false },
+  { id: 1003, name: 'Frankin Wong', age: 18, isActive: true }
 ])
 
-const todoList = ref([])
-
-async function getTodoList() {
-  const response = await fetch('https://jsonplaceholder.typicode.com/todos')
-  const data = await response.json()
-  console.log(data)
-  todoList.value = data
+function sortUsersByAge() {
+  users.value.sort((a, b) => a.age - b.age)
 }
 
-onMounted(() => {
-  getTodoList()
-})
+// filter is a non-mutating method, so we need to replace the old array
+function hideInactiveUsers() {
+  users.value = users.value.filter((user) => user.isActive)
+}
+
+// slice is a non-mutating method, so we need to replace the old array
+function showFirstTwoUsers() {
+  users.value = users.value.slice(0, 2)
+}
 </script>
 
 <style scoped>
-.cursed {
+.inactive {
   color: red;
+  text-decoration: line-through;
 }
 </style>
